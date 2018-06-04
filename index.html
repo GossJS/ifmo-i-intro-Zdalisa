@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Vue Demo</title>
+        <link rel="stylesheet" href="https://kodaktor.ru/css/react5b_62dfe">
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <vote-button-list></vote-button-list>
+        </div>
+        <script>
+            const url = "https://kodaktor.ru/j/react5b_6cbf2";
+
+            Vue.component('vote-button-list', {
+                data: function () {
+                    return {
+                        voteButtonList: []
+                    }
+                },
+                mounted() {
+                    axios.get(url).then(response => {
+                        this.voteButtonList = response.data
+                    })
+                },
+                template: '<ul><li is="vote-button"' +
+                    'v-for="(voteButton) in voteButtonList"' +
+                    'v-bind:key="voteButton.id"' +
+                    'v-bind:title="voteButton.title"' +
+                    'v-bind:votes="voteButton.votes"' +
+                    'v-on:click="handleClick(voteButton)"' +
+                    '></li></ul>'
+            });
+
+            Vue.component('vote-button', {
+                template: '<div class="button"><button v-on:click="handleClick(1)">{{ title }} ⬆ </button>' +
+                    '<strong> голосов: {{ votes }}</strong></div>',
+                props: ['title', 'votes'],
+                methods: {
+                    handleClick (delta) {
+                        this.votes += delta
+                    }
+                }
+            });
+
+            new Vue({
+                el: '#app'
+            })
+        </script>
+    </body>
+</html>
